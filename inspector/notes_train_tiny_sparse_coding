@@ -1,0 +1,323 @@
+
+from typing import final
+
+from jaxtyping import Float
+import torch
+from torch import Tensor
+from torch.nn.parameter import Parameter
+
+from sparse_autoencoder.autoencoder.model import SparseAutoencoder
+from sparse_autoencoder.autoencoder.abstract_autoencoder import AbstractAutoencoder
+from sparse_autoencoder.autoencoder.components.linear_encoder import LinearEncoder
+from sparse_autoencoder.autoencoder.components.tied_bias import TiedBias, TiedBiasPosition
+from sparse_autoencoder.autoencoder.components.unit_norm_decoder import UnitNormDecoder
+from sparse_autoencoder.tensor_types import Axis
+from sparse_autoencoder.utils.tensor_shape import shape_with_optional_dimensions
+
+# Make sure to import or define SparseAutoencoder, LinearEncoder, UnitNormDecoder, TiedBias, etc.
+
+def load_sparse_autoencoder(file_path):
+    """
+    Load a SparseAutoencoder from a saved state.
+
+    Parameters:
+    file_path (str): Path to the file where the autoencoder's state is saved.
+
+    Returns:
+    SparseAutoencoder: The loaded SparseAutoencoder instance.
+    """
+
+    # Initialize an instance of SparseAutoencoder
+    # You might need to provide arguments to the constructor based on how SparseAutoencoder is defined
+    autoencoder = SparseAutoencoder()
+
+    # Load the state dictionary from the file
+    state_dict = torch.load(file_path)
+
+    # Apply the loaded state dictionary to the autoencoder instance
+    autoencoder.load_state_dict(state_dict)
+
+    return autoencoder
+
+# Example usage
+file_path = 'sparse_autoencoder_1m_35094528.pt'
+loaded_autoencoder = load_sparse_autoencoder(file_path)
+
+
+
+I am using the above with python3.10. However, I need the sparseautoencoder for a project that uses python 3.9. I am running the sparse autoencoder through the forward pass for many tokens, so it needs to be able to run the forward function. I don't know the best way to do this.
+One solution would be to take all the relevant files for SparseAutoencoder and what it depends on, and convert them to be python3.9 compatible, and then load and run these classes.
+is there a way to load the sparse autoencoder in a very minimal way, such that it contains just what is needed to run a forward pass?
+
+
+
+
+for name, param in state_dict.items():
+    if name in autoencoder.state_dict():
+        getattr(autoencoder, name).data.copy_(param)
+
+
+
+
+
+TRYING SPARSE CODING TRAINING
+
+
+
+
+
+
+
+
+
+def test_end_to_end(self):
+    cfg = TrainArgs()
+    cfg.model_name = "pythia-70m-deduped"
+    cfg.dataset_name = "NeelNanda/pile-10k"
+
+    cfg.batch_size = 500
+    cfg.use_wandb = True
+    cfg.wandb_images = True
+    cfg.save_every = 10
+    cfg.use_synthetic_dataset = False
+    cfg.dtype = torch.float32
+    cfg.lr = 1e-3
+    cfg.n_chunks = 1
+    cfg.n_repetitions = 1
+    cfg.activation_width = 2048
+    cfg.layer = 2
+    cfg.chunk_size_gb = 0.1
+
+    cfg.layer_loc = "residual"
+
+    cfg.tied_ae = False
+    cfg.learned_dict_ratio = 0.5
+
+    cfg.output_folder = (
+        f"integration_test"
+    )
+    cfg.dataset_folder = f"pile10k_test"
+    print(cfg.device)
+    sweep(single_setoff, cfg)
+    wandb.finish()
+
+
+
+
+
+                # Convert non-serializable objects to serializable formats
+                config['dtype'] = str(config['dtype'])  # Convert torch.dtype to string
+
+                # Now you can dump the config to YAML
+                with open(os.path.join(cfg.iter_folder, "config.yaml"), 'w') as f:
+                    yaml.dump(config, f)
+
+
+
+
+
+
+sizes.
+
+The weights for the encoder: are d_mlp by d_hidden
+where
+        d_hidden = cfg["d_mlp"] * cfg["dict_mult"]  # Initialize model hyperparameters from config dict
+
+the bias for the encoder are size d_hidden.
+
+
+        self.W_enc = nn.Parameter(torch.nn.init.kaiming_uniform_(torch.empty(d_mlp, d_hidden, dtype=dtype)))
+        self.W_dec = nn.Parameter(torch.nn.init.kaiming_uniform_(torch.empty(d_hidden, d_mlp, dtype=dtype)))
+        self.b_enc = nn.Parameter(torch.zeros(d_hidden, dtype=dtype))
+        self.b_dec = nn.Parameter(torch.zeros(d_mlp, dtype=dtype))
+
+
+THerefore 
+        params["encoder"] = torch.empty((n_dict_components, activation_size), device=device, dtype=dtype)
+the weights for the encoder are n_dict_components by activation size
+and the bias for the encoder are size n_dict_components
+        params["encoder_bias"] = torch.empty((n_dict_components,), device=device, dtype=dtype)
+
+therefore (when thinking about residual tream autoencoder training of course)
+d_mlp = activation_size
+d_hidden = cfg["d_mlp"] * cfg["dict_mult"] = n_dict_components
+
+
+we have
+
+        models = [
+            FunctionalSAE.init(
+                cfg.activation_width,
+                dict_size,
+                l1_alpha,
+                bias_decay=0.0,
+                dtype=cfg.dtype,
+            )
+            for l1_alpha in l1_values
+        ]
+
+
+so then 
+
+from autoencoders.sae_ensemble import FunctionalSAE, FunctionalTiedSAE
+class FunctionalSAE(DictSignature):
+    @staticmethod
+    def init(
+        activation_size,
+        n_dict_components,
+        l1_alpha,
+        bias_decay=0.0,
+        device=None,
+        dtype=None,
+    ):
+
+so
+
+activation_size = cfg.activation_width
+n_dict_components = dict_size
+dict_size = int(cfg.activation_width * cfg.learned_dict_ratio)
+
+
+therefore, if we want "α = .00086 and R = 2" from the paper,  R is dictionary size ratio and coefficient α is the ℓ1
+
+"We mainly study residual streams in Pythia-70M and Pythia 410-M, for which the residual streams are of
+size din = 512 and din = 1024"
+
+"Figure 8: Comparison of average interpretability scores across dictionary sizes. All dictionaries were
+trained on 20M activation vectors obtained by running Pythia-70M over the Pile with α = .00086."
+
+
+
+
+
+How many activation vectors is the sparse autoencoder trained on?
+well, an activation vector is a single run of the residual stream right? So there need to be 
+
+
+
+"To train the sparse autoencoder described in Section 2, we use data from the Pile (Gao et al., 2020), a
+large, public webtext corpus. We run the model that we want to interpret over this text while caching
+and saving the activations at a particular layer. These activations then form a dataset, which we use
+to train the autoencoders. The autoencoders are trained with the Adam optimiser with a learning rate
+of 1e-3 and are trained on 5-50M activation vectors for 1-3 epochs, with larger dictionaries taking
+longer to converge. A single training run using this quantity of data completes in under an hour on
+a single A40 GPU."
+
+
+
+
+def run_across_layers() -> None:
+    cfg = EnsembleArgs()
+    cfg.model_name = "EleutherAI/pythia-70m-deduped"
+#    cfg.dataset_name = "EleutherAI/pile"
+    cfg.dataset_name = "NeelNanda/pile-10k" #DMR added this instead
+    # DMR added this
+    cfg.center_activations = False
+
+    cfg.n_repetitions = 1 #DMR added this
+    cfg.batch_size = 1024
+    cfg.use_wandb = True
+    cfg.activation_width = 512
+    cfg.save_every = 5
+    cfg.n_chunks = 1
+#    cfg.n_chunks = 20
+    cfg.n_epochs = 10 # DMR changed from 20
+    cfg.tied_ae = True
+
+
+    # DMR: modified this
+    cfg.l1_alpha = 0.00086
+    cfg.epochs = 10
+
+    print("cfg")
+    print(cfg)
+    for layer in [0, 1, 2, 3, 4, 5]:
+        for layer_loc in ["residual"]:
+            for dict_ratio in [4]:
+                cfg.layer = layer
+                cfg.layer_loc = layer_loc
+                cfg.learned_dict_ratio = dict_ratio
+
+                print(f"Running layer {layer}, layer location {layer_loc}, dict_ratio {dict_ratio}")
+
+                # DMR changed this to my location
+                cfg.output_folder = f"./longrun2408/{'tied' if cfg.tied_ae else 'untied'}_{layer_loc}_l{cfg.layer}_r{int(cfg.learned_>
+                cfg.dataset_folder = f"pilechunks_l{cfg.layer}_{layer_loc}"
+
+                print(f"Output folder: {cfg.output_folder}, dataset folder: {cfg.dataset_folder}")
+
+                cfg.use_synthetic_dataset = False
+                cfg.dtype = torch.float32
+                cfg.lr = 1e-3
+
+                sweep(simple_setoff, cfg)
+
+            # delete the dataset to save space
+            shutil.rmtree(cfg.dataset_folder)
+
+
+
+
+
+from datetime import datetime
+import os
+import sys
+
+sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
+
+import numpy as np
+import torch
+import torchopt
+import wandb
+
+from config import TrainArgs
+from autoencoders.sae_ensemble import FunctionalSAE, FunctionalTiedSAE
+from autoencoders.ensemble import FunctionalEnsemble
+from big_sweep import sweep
+
+def single_setoff(cfg):
+    l1_values = np.array([0.00086])
+    l1_values = np.concatenate([[0], l1_values])
+    ensembles = []
+
+    dict_size = int(cfg.activation_width * cfg.learned_dict_ratio)
+    device = cfg.device
+    if cfg.tied_ae:
+        models = [
+            FunctionalTiedSAE.init(
+                cfg.activation_width,
+                dict_size,
+                l1_alpha,
+                dtype=cfg.dtype,
+            )
+            for l1_alpha in l1_values
+        ]
+    else:
+        models = [
+            FunctionalSAE.init(
+                cfg.activation_width,
+                dict_size,
+                l1_alpha,
+                bias_decay=0.0,
+                dtype=cfg.dtype,
+            )
+            for l1_alpha in l1_values
+        ]
+
+
+    if cfg.tied_ae:
+        ensemble = FunctionalEnsemble(models, FunctionalTiedSAE, torchopt.adam, {"lr": cfg.lr}, device=device)
+    else:
+        ensemble = FunctionalEnsemble(models, FunctionalSAE, torchopt.adam, {"lr": cfg.lr}, device=device)
+    args = {"batch_size": cfg.batch_size, "device": device, "dict_size": dict_size}
+    name = f"simple_{cfg.device}"
+    ensembles.append((ensemble, args, name))
+
+    print(len(ensembles), "ensembles")
+    return (
+        ensembles,
+        ["dict_size"],
+        ["l1_alpha"],
+        {"dict_size": [dict_size], "l1_alpha": l1_values},
+    )    
+
