@@ -1,6 +1,6 @@
 import random
 
-def print_reasoning_test(exclusion_template, non_exclusion_templates, character_options, relationship_options, irrelevant_content_options, alternative_word_options, categories):
+def get_reasoning_test(exclusion_template, non_exclusion_templates, character_options, relationship_options, irrelevant_content_options, alternative_word_options, categories):
     """
     Generates a reasoning test by varying character names, relationships, irrelevant content, and the use of alternative words.
     This version uses multiple templates and ensures grammatical correctness, with category-specific pet names.
@@ -31,27 +31,31 @@ def print_reasoning_test(exclusion_template, non_exclusion_templates, character_
     alternative_word = random.choice(alternative_word_options)
     first_example_shown, second_example_shown = random.sample([example1,example2], 2)
     pronoun_capitalized = pronoun.capitalize()
+
     # Construct the test with logical sentence order and coherence
-    
-    test = exclusion_template.format(name=name, pronoun=pronoun, relationship=relationship, irrelevant_content_1=irrelevant_content_1,irrelevant_content_2=irrelevant_content_2, irrelevant_content_3=irrelevant_content_3, alternative_word=alternative_word, category_plural=category_plural,category=category, example1=example1, example2=example2,first_example_shown=first_example_shown, second_example_shown=second_example_shown,pronoun_capitalized=pronoun_capitalized)
-    print(f"exclusion: {test}")
+
+    test_exclusion = exclusion_template.format(name=name, pronoun=pronoun, relationship=relationship, irrelevant_content_1=irrelevant_content_1,irrelevant_content_2=irrelevant_content_2, irrelevant_content_3=irrelevant_content_3, alternative_word=alternative_word, category_plural=category_plural,category=category, example1=example1, example2=example2,first_example_shown=first_example_shown, second_example_shown=second_example_shown,pronoun_capitalized=pronoun_capitalized)
+    print(f"exclusion: {test_exclusion}")
+    all_tests = {}
+    all_tests["start_exclusion"] = {"test":test_exclusion,"correct_completion":example2,"incorrect_completion":example1}
     for key, template in non_exclusion_templates.items():
-        test = template.format(name=name, pronoun=pronoun, relationship=relationship, irrelevant_content_1=irrelevant_content_1,irrelevant_content_2=irrelevant_content_2, irrelevant_content_3=irrelevant_content_3, alternative_word=alternative_word, category_plural=category_plural,category=category, example1=example1, example2=example2,first_example_shown=first_example_shown, second_example_shown=second_example_shown,pronoun_capitalized=pronoun_capitalized)
+        test_non_exclusion = template.format(name=name, pronoun=pronoun, relationship=relationship, irrelevant_content_1=irrelevant_content_1,irrelevant_content_2=irrelevant_content_2, irrelevant_content_3=irrelevant_content_3, alternative_word=alternative_word, category_plural=category_plural,category=category, example1=example1, example2=example2,first_example_shown=first_example_shown, second_example_shown=second_example_shown,pronoun_capitalized=pronoun_capitalized)
         # non_exclusion_text = generate_alternative_reasoning_test(template, character_options, relationship_options, irrelevant_content_options, alternative_word_options,categories)
-
-        print(f"{key}: {test}")
+        all_tests[key] = {"test":test_non_exclusion,"correct_completion":example2,"incorrect_completion":example1}
+        print(f"{key}: {test_non_exclusion}")
     print("")
     print("")
     print("")
 
-    return test
+    return all_tests
 
 # Example templates with correct grammar for each structure
 templates = [
-    {"start_exclusion": "{irrelevant_content_1} {name} wanted {category}. {name} liked both a {first_example_shown} and maybe a {second_example_shown}. {irrelevant_content_2} When {name} asked {relationship} for a {example1} and was refused, {name} requested a ",
-    "start_possession": "{irrelevant_content_1} {name} wanted {category}. {name} liked both a {first_example_shown} and maybe a {second_example_shown}. {irrelevant_content_2} When {name} asked {relationship} for a {example1} and was allowed, {name} got a ",
-    "start_nonpossession": "{irrelevant_content_1} {name} wanted {category}. {name} liked both a {first_example_shown} and maybe a {second_example_shown}. {irrelevant_content_2} When {name} asked {relationship} for a {example1} and was refused, {name} still didn't have a ",
-    "correct completion exclusion": "{example2}","correct completion posession": "{example1}","correct completion possession": "{example2}"},
+    {"start_exclusion": "{irrelevant_content_1} {name} really wanted a {first_example_shown} or a {second_example_shown}. {name} asked {relationship} for a {example1} and {relationship} said no, so instead {name} asked for a "},
+    {"start_exclusion": "{name} wanted {category}. {name} liked both a {first_example_shown} and a {second_example_shown}. {name} asked {relationship} for a {example1} but they said no! So {name} got a ",
+    "start_possession": "{name} wanted {category}. {name} liked both a {first_example_shown} and a {second_example_shown}. When {name} asked {relationship} for a {example2} and they said yes! So {name} got a ",
+    "start_nonpossession": "{irrelevant_content_1} {name} wanted a {category}. {name} liked both a {first_example_shown} and maybe a {second_example_shown}. {irrelevant_content_2} When {name} asked {relationship} for a {example1} and was refused, {name} still didn't have a ",
+    "correct completion exclusion": "{example2}","correct completion posession": "{example2}","correct completion possession": "{example2}"},
     {"start_exclusion": "{name} loved {category_plural}, especially a {first_example_shown}. {irrelevant_content_1} {name} also would love a {second_example_shown}. {irrelevant_content_2} {relationship} couldn't get {name} a {example1}. {irrelevant_content_3} {name} was happy about getting a ",
     "start_preference": "{name} loved {category_plural}, especially a {first_example_shown}. {irrelevant_content_1} {name} also would love a {second_example_shown}. {irrelevant_content_2} {relationship} was luckily able to get {name} a {example2}. {irrelevant_content_3} {name} was happy about getting a ",
     "correct completion exclusion": "{example2}","correct completion preference": "{example2}"},
@@ -80,10 +84,10 @@ more_interesting_examples = [
     "correct completion exclusion": "{example2}",
     "correct completion possession": "{example2}"},
     {"start_exclusion": "{irrelevant_content_1} For {name}'s birthday, {name} could choose either a {first_example_shown} or a {second_example_shown}. {irrelevant_content_2} {pronoun_capitalized} decided a {example1} was not what {pronoun} wanted. {irrelevant_content_3} So, on {name}'s birthday, {name} was smiling with {name}'s new ",
-    "start_possession": "{irrelevant_content_1} For {name}'s birthday, {name} could choose either a {first_example_shown} or a {second_example_shown}. {irrelevant_content_2} {pronoun_capitalized} decided a {example1} was what {pronoun} wanted. {irrelevant_content_3} So, on {name}'s birthday, {name} was smiling with {name}'s new ",
+    "start_possession": "{irrelevant_content_1} For {name}'s birthday, {name} could choose either a {first_example_shown} or a {second_example_shown}. {irrelevant_content_2} {pronoun_capitalized} decided a {example2} was what {pronoun} wanted. {irrelevant_content_3} So, on {name}'s birthday, {name} was smiling with {name}'s new ",
     "start_preference": "{irrelevant_content_1} For {name}'s birthday, {name} could choose either a {first_example_shown} or a {second_example_shown}. {irrelevant_content_2} {pronoun_capitalized} decided a {example1} was great, but {pronoun} was more excited about {example2}. {irrelevant_content_3} So, on {name}'s birthday, {name} was smiling with {name}'s new ",
     "correct completion exclusion": "{example2}",
-    "correct completion possession": "{example1}",
+    "correct completion possession": "{example2}",
     "correct completion preference": "{example2}"},
     {"start_exclusion": "{irrelevant_content_1} In the kitchen, there were two {category_plural}, a {first_example_shown} and a {second_example_shown}. Mom lost {name}'s {example1}. {irrelevant_content_2} In {name}'s hand was the ",
     "start_possession": "{irrelevant_content_1} In the kitchen, there were two {category_plural}, a {first_example_shown} and a {second_example_shown}. Mom gave {name} the {example2}. {irrelevant_content_2} In {name}'s hand was the ",
@@ -96,8 +100,9 @@ more_interesting_examples = [
 ]
 
 more_generated_examples = [
-    {"start_exclusion": "{irrelevant_content_1} Every night, {name} dreamed about {category_plural}. Sometimes {name} dreamed of a {first_example_shown}. {irrelevant_content_2} {name} also sometimes dreamed about a {second_example_shown}. One morning, {pronoun} found that the {example1} had turned real! {irrelevant_content_3} Excitedly, {name} looked for other {category_plural} and was excited to find the ",
-    "start_existence": "{irrelevant_content_1} Every night, {name} dreamed about {category_plural}. Sometimes {name} dreamed of a {first_example_shown}. {irrelevant_content_2} {name} also sometimes dreamed about a {second_example_shown}. One morning, {pronoun} found that the {example2} had turned real! {irrelevant_content_3} Excitedly, {name} looked for {category_plural} and was excited to indeed find the ",
+    {"start_exclusion": "{irrelevant_content_1}Every night, {name} dreamed about {category_plural}. Sometimes {name} dreamed of a {first_example_shown}. {irrelevant_content_2} {name} also sometimes dreamed about a {second_example_shown}. One morning, {relationship} told {name} that the {example1} had turned real! {irrelevant_content_3}Excitedly, {name} looked for other {category_plural} and was excited to find the ",
+    "start_existence": "{irrelevant_content_1}Every night, {name} dreamed about {category_plural}. Sometimes {name} dreamed of a {first_example_shown}. {irrelevant_content_2}{name} also sometimes dreamed about a {second_example_shown}. One morning, {relationship} told {name} that the {example2} had turned real! {irrelevant_content_3} Excitedly, {name} looked for {category_plural} and was excited to indeed find the ",
+    "start_existence_negation": "{irrelevant_content_1}Every night, {name} dreamed about {category_plural}. Sometimes {name} dreamed of a {first_example_shown}. {irrelevant_content_2}{name} also sometimes dreamed about a {second_example_shown}. One morning, {relationship} told {name} that the {example2} had turned real! {irrelevant_content_3}Excitedly, {name} looked for {category_plural} but was disappointed to not find the ",
     "correct completion exclusion": "{example2}","correct completion existence": "{example2}"},
     {"start_exclusion": "{irrelevant_content_1} While exploring the attic, {name} found an old box with two {category_plural}. At first, {name} only saw a {first_example_shown}. But then {name} noticed there was a {second_example_shown} too! {irrelevant_content_2} {pronoun_capitalized} decided to give away the {example1}. {irrelevant_content_3} At bedtime, {name} felt happy having the ",
     "start_possession": "{irrelevant_content_1} While exploring the attic, {name} found an old box with two {category_plural}. At first, {name} only saw a {first_example_shown}. But then {name} noticed there was a {second_example_shown} too! {irrelevant_content_2} {pronoun_capitalized} decided to keep the {example2}. {irrelevant_content_3} At bedtime, {name} felt happy having the ",
@@ -109,16 +114,19 @@ more_generated_examples = [
     "start_possession": "{irrelevant_content_1} At the picnic, {name} got a {first_example_shown}. Later in the day, {name} found a {second_example_shown}. {irrelevant_content_2} {pronoun_capitalized} accidentally left the {example2} at the park. {irrelevant_content_3} Thankfully, at the park, {name} found the ",
     "correct completion exclusion": "{example2}",
     "correct completion possession": "{example2}"},
-    {"start_exclusion": "{irrelevant_content_1} {name} received two gifts: a {first_example_shown} and a {second_example_shown}. {irrelevant_content_2} At first, {pronoun} played with the {example1}. {irrelevant_content_3} But soon, {name}'s favorite was the ",
-    "start_preference": "{irrelevant_content_1} {name} received two gifts: a {first_example_shown} and a {second_example_shown}. {irrelevant_content_2} {pronoun} played with the {example1}. {irrelevant_content_3} {name}'s favorite was the ",
+    {"start_exclusion": "{irrelevant_content_1} {name} received two gifts: a {first_example_shown} and a {second_example_shown}. {irrelevant_content_2} {irrelevant_content_3} {pronoun} didn't like the {example1} so {name}'s favorite was the ",
+    "start_exlu_using_a": "{irrelevant_content_1} {name} received two gifts: a {first_example_shown} and a {second_example_shown}. {irrelevant_content_2} {irrelevant_content_3} {pronoun} didn't like a {example1} so {name}'s favorite was a ",
+    "start_preference": "{irrelevant_content_1} {name} received two gifts: a {first_example_shown} and a {second_example_shown}. {irrelevant_content_2} {pronoun} always played with the {example2}. {irrelevant_content_3} {name}'s favorite was the ",
+    "start_preference_balanced_count": "{irrelevant_content_1} {name} received two gifts: a {first_example_shown} and a {second_example_shown}. {pronoun_capitalized} always played with the {example2}, but {pronoun} was getting tired of the {example1}. {irrelevant_content_3} {name}'s favorite was the ",
+    "start_preference_reverse_order": "{irrelevant_content_1} {irrelevant_content_2} {pronoun} always played with a {example2} {name} received two gifts: a {example2} and a {example1}. {irrelevant_content_2} {irrelevant_content_3} {name}'s favorite was the ",
     "correct completion exclusion": "{example2}",
     "correct completion preference": "{example2}"}
 ]
 templates.extend(more_interesting_examples)
-templates.extend(more_interesting_examples)
+#templates.extend(more_interesting_examples)
 templates.extend(more_generated_examples)
-templates.extend(more_generated_examples)
-templates.extend(more_generated_examples)
+#templates.extend(more_generated_examples)
+#templates.extend(more_generated_examples)
 
 
 # Example usage with defined templates
@@ -171,7 +179,7 @@ irrelevant_content_options.extend([
     "The fireplace crackled cozily in the evening."
 ])
 irrelevant_content_options.extend([""]*50)
-
+irrelevant_content_options = ["","",""]
 # Example character options with gender flipping
 character_options = [
     {"name": "Aiden", "pronoun": "he"},
@@ -211,12 +219,11 @@ categories = [
     {"category": "a type of bug", "category_plural": "bugs", "examples": ["butterfly", "ladybug", "ant", "grasshopper", "bee", "spider", "dragonfly", "beetle", "caterpillar", "firefly"]},
     {"category": "a sea creature", "category_plural": "sea creatures", "examples": ["fish", "dolphin", "shark", "octopus", "seahorse", "whale", "jellyfish", "crab", "lobster", "starfish"]},
     {"category": "a bird", "category_plural": "birds", "examples": ["sparrow", "owl", "eagle", "parrot", "penguin", "flamingo", "peacock", "swan", "hummingbird", "woodpecker"]},
-    {"category": "a piece of clothing", "category_plural": "clothes", "examples": ["t-shirt", "pants", "dress", "hat", "socks", "jacket", "sweater", "scarf", "gloves", "boots"]},
+    {"category": "a piece of clothing", "category_plural": "clothes", "examples": ["t-shirt", "dress", "hat", "jacket", "sweater", "scarf"]},
     {"category": "a shape", "category_plural": "shapes", "examples": ["circle", "square", "triangle", "rectangle", "star", "heart", "oval", "diamond", "pentagon", "hexagon"]},
     {"category": "a type of cake", "category_plural": "cakes", "examples": ["chocolate cake", "vanilla cake", "strawberry cake", "lemon cake", "carrot cake", "cheesecake", "sponge cake", "red velvet cake", "ice cream cake", "fruit cake"]},
     {"category": "a type of sandwich", "category_plural": "sandwiches", "examples": ["peanut butter and jelly sandwich", "ham and cheese sandwich", "turkey sandwich", "grilled cheese sandwich", "tuna sandwich", "BLT", "chicken sandwich"]},
     {"category": "a type of ice cream", "category_plural": "ice creams", "examples": ["vanilla", "chocolate", "strawberry", "mint chocolate chip", "cookie dough", "rocky road", "butter pecan", "neapolitan", "cookies and cream", "pistachio"]},
-    {"category": "a type of dinosaur", "category_plural": "dinosaurs", "examples": ["Tyrannosaurus Rex", "Velociraptor", "Triceratops", "Stegosaurus", "Brachiosaurus", "Pterodactyl", "Ankylosaurus", "Spinosaurus", "Diplodocus", "Allosaurus"]},
     {"category": "a type of tree", "category_plural": "trees", "examples": ["maple tree","apple tree", "cherry tree"]},
     {"category": "a type of hat", "category_plural": "hats", "examples": ["baseball cap", "beanie", "cowboy hat", "sun hat", "beret", "fedora", "bucket hat", "witch hat", "helmet", "crown"]},
     {"category": "a type of shoe", "category_plural": "shoes", "examples": ["sneaker", "boot", "sandal", "loafer", "slipper", "running shoe", "ballet shoe", "hiking boot"]},
@@ -225,14 +232,36 @@ categories = [
     {"category": "a type of pasta", "category_plural": "pastas", "examples": ["spaghetti", "macaroni", "lasagna", "ravioli"]},
     {"category": "a type of drink", "category_plural": "drinks", "examples": ["water", "juice", "milk", "lemonade", "iced tea", "hot chocolate", "smoothie", "soda", "shake", "coffee"]},
     {"category": "a type of dessert", "category_plural": "desserts", "examples": ["cupcake", "cookie", "brownie", "pie", "tin of pudding", "donut", "tart", "muffin"]},
-    {"category": "a type of birdhouse", "category_plural": "birdhouses", "examples": ["wooden birdhouse", "painted birdhouse", "pretty birdhouse"]},
+    {"category": "a type of birdhouse", "category_plural": "birdhouses", "examples": ["wooden birdhouse", "painted birdhouse"]},
     {"category": "a type of cookie", "category_plural": "cookies", "examples": ["chocolate chip cookie", "oatmeal raisin cookie", "sugar cookie", "peanut butter cookie", "snickerdoodle", "gingerbread cookie", "white chocolate cookie", "lemon cookie"]}
 ]
 
-for _ in range(10):
-    # print("templates")
-    # print(templates)
-    template_series = random.choice(templates)
+def main():
+    for _ in range(10):
+        # print("templates")
+        # print(templates)
+        template_series = random.choice(templates)
+        exclusion_template = None
+        # print("template_series")
+        # print(template_series)
+        non_exclusion_templates = {}
+        # Randomly choose a template from the provided list
+        for key, value in template_series.items():
+            # print("key, value")
+            # print(f"{key}, {value}")
+            if "start_exclusion" in key:
+                exclusion_template = value
+            elif "start" in key:
+                non_exclusion_templates[key] = value
+        # Generate a reasoning test with improved sentence structure
+        get_reasoning_test(exclusion_template, non_exclusion_templates, character_options, relationship_options, irrelevant_content_options, alternative_word_options,categories)
+
+
+# deception might be more like: having objects, and then understanding that when you lie, the object disappears
+
+def get_text_and_completion_once(template_series=None):
+    if template_series is None:
+        template_series = random.choice(templates)
     exclusion_template = None
     # print("template_series")
     # print(template_series)
@@ -245,8 +274,8 @@ for _ in range(10):
             exclusion_template = value
         elif "start" in key:
             non_exclusion_templates[key] = value
-    # Generate a reasoning test with improved sentence structure
-    print_reasoning_test(exclusion_template, non_exclusion_templates, character_options, relationship_options, irrelevant_content_options, alternative_word_options,categories)
 
+    return get_reasoning_test(exclusion_template, non_exclusion_templates, character_options, relationship_options, irrelevant_content_options, alternative_word_options,categories)
 
-# deception might be more like: having objects, and then understanding that when you lie, the object disappears
+def get_templates():
+    return templates
