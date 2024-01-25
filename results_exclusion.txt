@@ -1,0 +1,923 @@
+Overall: the model certainly doesn't understand exclusion in a general way :(
+
+
+temperature 0.7
+
+Success rate for exclusion: 9.00% (45 / 500)
+Failure rate for exclusion: 25.80% (129 / 500)
+Success rate for possession: 21.99% (73 / 332)
+Failure rate for possession: 10.24% (34 / 332)
+Success rate for preference: 13.49% (17 / 126)
+Failure rate for preference: 11.11% (14 / 126)
+Success rate for possession2: 40.00% (30 / 75)
+Failure rate for possession2: 12.00% (9 / 75)
+Success rate for existence: 19.44% (14 / 72)
+Failure rate for existence: 16.67% (12 / 72)
+Success rate for nonpossession: 0.00% (0 / 29)
+Failure rate for nonpossession: 6.90% (2 / 29)
+
+
+temperature 0: looking a bit better overall.
+Success rate for exclusion: 11.60% (58 / 500)
+Failure rate for exclusion: 30.40% (152 / 500)
+Success rate for preference: 16.78% (24 / 143)
+Failure rate for preference: 11.89% (17 / 143)
+Success rate for possession: 22.45% (77 / 343)
+Failure rate for possession: 15.16% (52 / 343)
+Success rate for possession2: 46.55% (27 / 58)
+Failure rate for possession2: 12.07% (7 / 58)
+Success rate for existence: 21.88% (14 / 64)
+Failure rate for existence: 18.75% (12 / 64)
+Success rate for nonpossession: 0.00% (0 / 33)
+Failure rate for nonpossession: 6.06% (2 / 33)
+
+removing all distraction sentences (where before it was about 50 of "" for the distraction sentences)
+
+Success rate for exclusion: 12.40% (62 / 500)
+Failure rate for exclusion: 33.40% (167 / 500)
+Success rate for possession: 27.86% (95 / 341)
+Failure rate for possession: 15.54% (53 / 341)
+Success rate for existence: 25.42% (15 / 59)
+Failure rate for existence: 15.25% (9 / 59)
+Success rate for possession2: 42.11% (24 / 57)
+Failure rate for possession2: 14.04% (8 / 57)
+Success rate for preference: 27.33% (41 / 150)
+Failure rate for preference: 20.67% (31 / 150)
+Success rate for nonpossession: 0.00% (0 / 28)
+Failure rate for nonpossession: 7.14% (2 / 28)
+
+
+
+
+things i'd expect it learns
+that are interesting beyond grammar
+
+characters help each other do things together
+
+you can eat things like sandwiches
+
+moms tell kids what to do
+
+achieving something makes characters happy
+
+possibly that you need to vary something that occurs once (we know for sure it doesn't know exclusion)
+
+it does seem to understand ownership? 
+
+the most impressive thing is that it really understands associations and categories pretty well.
+
+maybe it knows that once a thing is drunk, its not around anymore
+
+
+
+
+{'test': " Nora received two gifts: a strawberry and a butter pecan.  At first, she played with the butter pecan.  But soon, Nora's favorite was the ", 'correct_completion': 'strawberry', 'incorrect_completion': 'butter pecan', 'answered_correctly': True, 'answered_incorrectly': False, 'answer': 'strawberry.'}
+item
+{'test': " Nora received two gifts: a strawberry and a butter pecan.  she played with the butter pecan.  Nora's favorite was the ", 'correct_completion': 'strawberry', 'incorrect_completion': 'butter pecan', 'answered_correctly': True, 'answered_incorrectly': False, 'answer': 'strawberry.'}
+template:
+{'correct completion exclusion': '{example2}',
+ 'correct completion posession': '{example2}',
+ 'correct completion possession': '{example2}',
+ 'start_exclusion': '{irrelevant_content_1} {name} wanted {category}. {name} '
+                    'liked both a {first_example_shown} and maybe a '
+                    '{second_example_shown}. {irrelevant_content_2} When '
+                    '{name} asked {relationship} for a {example1} and was '
+                    'refused, {name} requested a ',
+ 'start_nonpossession': '{irrelevant_content_1} {name} wanted {category}. '
+                        '{name} liked both a {first_example_shown} and maybe a '
+                        '{second_example_shown}. {irrelevant_content_2} When '
+                        '{name} asked {relationship} for a {example1} and was '
+                        "refused, {name} still didn't have a ",
+ 'start_possession': '{irrelevant_content_1} {name} wanted {category}. {name} '
+                     'liked both a {first_example_shown} and maybe a '
+                     '{second_example_shown}. {irrelevant_content_2} When '
+                     '{name} asked {relationship} for a {example2} and was '
+                     'allowed, {name} got a '}
+
+Success rate for exclusion: 6.00% (9 / 150)
+Failure rate for exclusion: 17.33% (26 / 150)
+Success rate for possession: 22.00% (33 / 150)
+Failure rate for possession: 3.33% (5 / 150)
+Success rate for nonpossession: 2.00% (3 / 150)
+Failure rate for nonpossession: 4.67% (7 / 150)
+
+
+
+template:
+{'correct completion exclusion': '{example2}',
+ 'correct completion preference': '{example2}',
+ 'start_exclusion': '{name} loved {category_plural}, especially a '
+                    '{first_example_shown}. {irrelevant_content_1} {name} also '
+                    'would love a {second_example_shown}. '
+                    "{irrelevant_content_2} {relationship} couldn't get {name} "
+                    'a {example1}. {irrelevant_content_3} {name} was happy '
+                    'about getting a ',
+ 'start_preference': '{name} loved {category_plural}, especially a '
+                     '{first_example_shown}. {irrelevant_content_1} {name} '
+                     'also would love a {second_example_shown}. '
+                     '{irrelevant_content_2} {relationship} was luckily able '
+                     'to get {name} a {example2}. {irrelevant_content_3} '
+                     '{name} was happy about getting a '}
+
+Success rate for exclusion: 8.67% (13 / 150)
+Failure rate for exclusion: 47.33% (71 / 150)
+Success rate for preference: 34.00% (51 / 150)
+Failure rate for preference: 21.33% (32 / 150)
+
+
+
+template:
+{'correct completion exclusion': '{example2}',
+ 'correct completion possession': '{example2}',
+ 'start_exclusion': '{irrelevant_content_1} {name} had two {category_plural}, '
+                    'one {first_example_shown} and one {second_example_shown}. '
+                    '{irrelevant_content_2}But oh no! {pronoun_capitalized} '
+                    'lost the {example1}. {irrelevant_content_3} {name} '
+                    'thought, "at least I still have the ',
+ 'start_possession': '{irrelevant_content_1} {name} had two {category_plural}, '
+                     'one {first_example_shown} and one '
+                     '{second_example_shown}. {irrelevant_content_2}But oh no! '
+                     '{pronoun_capitalized} lost the {example1}, but later '
+                     'found it again. {irrelevant_content_3} {name} thought, '
+                     '"It\'s great I still have the '}
+
+Success rate for exclusion: 6.00% (9 / 150)
+Failure rate for exclusion: 46.67% (70 / 150)
+Success rate for possession: 3.33% (5 / 150)
+Failure rate for possession: 50.67% (76 / 150)
+
+
+
+template:
+{'correct completion exclusion': '{example2}',
+ 'correct completion possession': '{example2}',
+ 'correct completion preference': '{example2}',
+ 'start_exclusion': "{irrelevant_content_1} For {name}'s birthday, {name} "
+                    'could choose either a {first_example_shown} or a '
+                    '{second_example_shown}. {irrelevant_content_2} '
+                    '{pronoun_capitalized} decided a {example1} was not what '
+                    "{pronoun} wanted. {irrelevant_content_3} So, on {name}'s "
+                    "birthday, {name} was smiling with {name}'s new ",
+ 'start_possession': "{irrelevant_content_1} For {name}'s birthday, {name} "
+                     'could choose either a {first_example_shown} or a '
+                     '{second_example_shown}. {irrelevant_content_2} '
+                     '{pronoun_capitalized} decided a {example2} was what '
+                     "{pronoun} wanted. {irrelevant_content_3} So, on {name}'s "
+                     "birthday, {name} was smiling with {name}'s new ",
+ 'start_preference': "{irrelevant_content_1} For {name}'s birthday, {name} "
+                     'could choose either a {first_example_shown} or a '
+                     '{second_example_shown}. {irrelevant_content_2} '
+                     '{pronoun_capitalized} decided a {example1} was great, '
+                     'but {pronoun} was more excited about {example2}. '
+                     "{irrelevant_content_3} So, on {name}'s birthday, {name} "
+                     "was smiling with {name}'s new "}
+
+Success rate for exclusion: 4.00% (6 / 150)
+Failure rate for exclusion: 42.67% (64 / 150)
+Success rate for possession: 43.33% (65 / 150)
+Failure rate for possession: 8.00% (12 / 150)
+Success rate for preference: 26.00% (39 / 150)
+Failure rate for preference: 30.67% (46 / 150)
+
+
+
+template:
+{'correct completion exclusion': '{example2}',
+ 'correct completion posession': '{example2}',
+ 'start_exclusion': '{irrelevant_content_1} In the kitchen, there were two '
+                    '{category_plural}, a {first_example_shown} and a '
+                    "{second_example_shown}. Mom lost {name}'s {example1}. "
+                    "{irrelevant_content_2} In {name}'s hand was the ",
+ 'start_possession': '{irrelevant_content_1} In the kitchen, there were two '
+                     '{category_plural}, a {first_example_shown} and a '
+                     '{second_example_shown}. Mom gave {name} the {example2}. '
+                     "{irrelevant_content_2} In {name}'s hand was the "}
+
+Success rate for exclusion: 13.33% (20 / 150)
+Failure rate for exclusion: 50.67% (76 / 150)
+Success rate for possession: 38.00% (57 / 150)
+Failure rate for possession: 13.33% (20 / 150)
+
+
+
+template:
+{'correct completion exclusion': '{example2}',
+ 'correct completion posession': '{example2}',
+ 'start_exclusion': '{irrelevant_content_1} {name} had two {category_plural}, '
+                    'a {first_example_shown} and also a '
+                    '{second_example_shown}. {pronoun_capitalized} gave the '
+                    "{example1} to {name}'s friend. In {name}'s room, {name} "
+                    'still kept the ',
+ 'start_possession': '{irrelevant_content_1} {name} had two {category_plural}, '
+                     'a {first_example_shown} and also a '
+                     '{second_example_shown}. {pronoun_capitalized} gave the '
+                     "{example2} to {name}'s friend. In {name}'s friend's "
+                     "room, {name}'s friend had the "}
+
+Success rate for exclusion: 8.67% (13 / 150)
+Failure rate for exclusion: 35.33% (53 / 150)
+Success rate for possession: 20.67% (31 / 150)
+Failure rate for possession: 14.00% (21 / 150)
+
+
+
+template:
+{'correct completion exclusion': '{example2}',
+ 'correct completion existence': '{example2}',
+ 'start_exclusion': '{irrelevant_content_1} Every night, {name} dreamed about '
+                    '{category_plural}. Sometimes {name} dreamed of a '
+                    '{first_example_shown}. {irrelevant_content_2} {name} also '
+                    'sometimes dreamed about a {second_example_shown}. One '
+                    'morning, {pronoun} found that the {example1} had turned '
+                    'real! {irrelevant_content_3} Excitedly, {name} looked for '
+                    'other {category_plural} and was excited to find the ',
+ 'start_existence': '{irrelevant_content_1} Every night, {name} dreamed about '
+                    '{category_plural}. Sometimes {name} dreamed of a '
+                    '{first_example_shown}. {irrelevant_content_2} {name} also '
+                    'sometimes dreamed about a {second_example_shown}. One '
+                    'morning, {pronoun} found that the {example2} had turned '
+                    'real! {irrelevant_content_3} Excitedly, {name} looked for '
+                    '{category_plural} and was excited to indeed find the '}
+
+Success rate for exclusion: 19.33% (29 / 150)
+Failure rate for exclusion: 25.33% (38 / 150)
+Success rate for existence: 30.00% (45 / 150)
+Failure rate for existence: 22.00% (33 / 150)
+
+
+
+template:
+{'correct completion exclusion': '{example2}',
+ 'correct completion possession': '{example2}',
+ 'correct completion possession2': '{example2}',
+ 'start_exclusion': '{irrelevant_content_1} While exploring the attic, {name} '
+                    'found an old box with two {category_plural}. At first, '
+                    '{name} only saw a {first_example_shown}. But then {name} '
+                    'noticed there was a {second_example_shown} too! '
+                    '{irrelevant_content_2} {pronoun_capitalized} decided to '
+                    'give away the {example1}. {irrelevant_content_3} At '
+                    'bedtime, {name} felt happy having the ',
+ 'start_possession': '{irrelevant_content_1} While exploring the attic, {name} '
+                     'found an old box with two {category_plural}. At first, '
+                     '{name} only saw a {first_example_shown}. But then {name} '
+                     'noticed there was a {second_example_shown} too! '
+                     '{irrelevant_content_2} {pronoun_capitalized} decided to '
+                     'keep the {example2}. {irrelevant_content_3} At bedtime, '
+                     '{name} felt happy having the ',
+ 'start_possession2': '{irrelevant_content_1} While exploring the attic, '
+                      '{name} found an old box with two {category_plural}. At '
+                      'first, {name} only saw a {first_example_shown}. But '
+                      'then {name} noticed there was a {second_example_shown} '
+                      'too! {irrelevant_content_2} {pronoun_capitalized} '
+                      'decided to give away the {example2}. '
+                      '{irrelevant_content_3} At bedtime, {name} felt happy '
+                      'about giving away the '}
+
+Success rate for exclusion: 8.00% (12 / 150)
+Failure rate for exclusion: 50.67% (76 / 150)
+Success rate for possession: 54.00% (81 / 150)
+Failure rate for possession: 12.67% (19 / 150)
+Success rate for possession2: 53.33% (80 / 150)
+Failure rate for possession2: 13.33% (20 / 150)
+
+
+
+template:
+{'correct completion exclusion': '{example2}',
+ 'correct completion possession': '{example2}',
+ 'start_exclusion': '{irrelevant_content_1} At the picnic, {name} got a '
+                    '{first_example_shown}. Later in the day, {name} found a '
+                    '{second_example_shown}. {irrelevant_content_2} '
+                    '{pronoun_capitalized} accidentally left the {example1} at '
+                    'the park. {irrelevant_content_3} Thankfully, at home, '
+                    '{name} still had the ',
+ 'start_possession': '{irrelevant_content_1} At the picnic, {name} got a '
+                     '{first_example_shown}. Later in the day, {name} found a '
+                     '{second_example_shown}. {irrelevant_content_2} '
+                     '{pronoun_capitalized} accidentally left the {example2} '
+                     'at the park. {irrelevant_content_3} Thankfully, at the '
+                     'park, {name} found the '}
+
+Success rate for exclusion: 19.33% (29 / 150)
+Failure rate for exclusion: 42.00% (63 / 150)
+Success rate for possession: 22.67% (34 / 150)
+Failure rate for possession: 10.00% (15 / 150)
+
+
+
+template:
+{'correct completion exclusion': '{example2}',
+ 'correct completion preference': '{example2}',
+ 'start_exclusion': '{irrelevant_content_1} {name} received two gifts: a '
+                    '{first_example_shown} and a {second_example_shown}. '
+                    '{irrelevant_content_2} At first, {pronoun} played with '
+                    "the {example1}. {irrelevant_content_3} But soon, {name}'s "
+                    'favorite was the ',
+ 'start_preference': '{irrelevant_content_1} {name} received two gifts: a '
+                     '{first_example_shown} and a {second_example_shown}. '
+                     '{irrelevant_content_2} {pronoun} played with the '
+                     "{example1}. {irrelevant_content_3} {name}'s favorite was "
+                     'the '}
+
+Success rate for exclusion: 21.33% (32 / 150)
+Failure rate for exclusion: 26.00% (39 / 150)
+Success rate for preference: 26.00% (39 / 150)
+Failure rate for preference: 26.67% (40 / 150)
+
+
+
+
+ 'start_possession': '{irrelevant_content_1} At the picnic, {name} got a '
+                     '{first_example_shown}. Later in the day, {name} found a '
+                     '{second_example_shown}. {irrelevant_content_2} '
+                     '{pronoun_capitalized} accidentally left the {example2} '
+                     'at the park. {irrelevant_content_3} Thankfully, at the '
+                     'park, {name} found the '}
+
+Success rate for possession: 22.67% (34 / 150)
+Failure rate for possession: 10.00% (15 / 150)
+
+this is a really interesting case where knowing if you leave something, you can find it again. Or maybe its just an induction head leave -> find
+(AFTER THE FACT: yeah, I'm pretty unconvinced this is anything other than [words] [words] example2 [words] [words] boosts example2)
+
+and yet
+
+template:
+{'correct completion exclusion': '{example2}',
+ 'correct completion preference': '{example2}',
+ 'start_exclusion': '{irrelevant_content_1} {name} received two gifts: a '
+                    '{first_example_shown} and a {second_example_shown}. '
+                    '{irrelevant_content_2} At first, {pronoun} played with '
+                    "the {example1}. {irrelevant_content_3} But soon, {name}'s "
+                    'favorite was the ',
+ 'start_preference': '{irrelevant_content_1} {name} received two gifts: a '
+                     '{first_example_shown} and a {second_example_shown}. '
+                     '{irrelevant_content_2} {pronoun} played with the '
+                     "{example1}. {irrelevant_content_3} {name}'s favorite was "
+                     'the '}
+
+Success rate for exclusion: 21.33% (32 / 150)
+Failure rate for exclusion: 26.00% (39 / 150)
+Success rate for preference: 26.00% (39 / 150)
+Failure rate for preference: 26.67% (40 / 150)
+
+this is just chance!
+
+meaning that playing with something doesn't seem to increase the chances...
+
+
+let's alter it so that it's "always" playing with it... (and fix that example1 bug)
+
+
+
+
+ 'start_exclusion': '{irrelevant_content_1} While exploring the attic, {name} '
+                    'found an old box with two {category_plural}. At first, '
+                    '{name} only saw a {first_example_shown}. But then {name} '
+                    'noticed there was a {second_example_shown} too! '
+                    '{irrelevant_content_2} {pronoun_capitalized} decided to '
+                    'give away the {example1}. {irrelevant_content_3} At '
+                    'bedtime, {name} felt happy having the ',
+
+Success rate for exclusion: 8.00% (12 / 150)
+Failure rate for exclusion: 50.67% (76 / 150)
+
+
+
+{irrelevant_content_1} {name} received two gifts: a {first_example_shown} and a {second_example_shown}. {irrelevant_content_2} At first, {pronoun} played with the {example1}. {irrelevant_content_3} But soon, {name}'s favorite was the 
+template_string not to skip
+received two gifts: a
+template:
+{'correct completion exclusion': '{example2}',
+ 'correct completion preference': '{example2}',
+ 'start_exclusion': '{irrelevant_content_1} {name} received two gifts: a '
+                    '{first_example_shown} and a {second_example_shown}. '
+                    '{irrelevant_content_2} At first, {pronoun} played with '
+                    "the {example1}. {irrelevant_content_3} But soon, {name}'s "
+                    'favorite was the ',
+ 'start_preference': '{irrelevant_content_1} {name} received two gifts: a '
+                     '{first_example_shown} and a {second_example_shown}. '
+                     '{irrelevant_content_2} {pronoun} always played with the '
+                     "{example2}. {irrelevant_content_3} {name}'s favorite was "
+                     'the '}
+
+Success rate for exclusion: 15.00% (15 / 100)
+Failure rate for exclusion: 38.00% (38 / 100)
+Success rate for preference: 30.00% (30 / 100)
+Failure rate for preference: 20.00% (20 / 100)
+
+
+let's try to get exclusion to succeed.
+
+{irrelevant_content_1} {name} received two gifts: a {first_example_shown} and a {second_example_shown}. {irrelevant_content_2} At first, {pronoun} played with the {example1}. {irrelevant_content_3} But {pronoun} didn't like {example1} so {name}'s favorite was the 
+template_string not to skip
+received two gifts: a
+template:
+{'correct completion exclusion': '{example2}',
+ 'correct completion preference': '{example2}',
+ 'start_exclusion': '{irrelevant_content_1} {name} received two gifts: a '
+                    '{first_example_shown} and a {second_example_shown}. '
+                    '{irrelevant_content_2} At first, {pronoun} played with '
+                    'the {example1}. {irrelevant_content_3} But {pronoun} '
+                    "didn't like {example1} so {name}'s favorite was the ",
+ 'start_preference': '{irrelevant_content_1} {name} received two gifts: a '
+                     '{first_example_shown} and a {second_example_shown}. '
+                     '{irrelevant_content_2} {pronoun} always played with the '
+                     "{example2}. {irrelevant_content_3} {name}'s favorite was "
+                     'the '}
+
+Success rate for exclusion: 13.00% (13 / 100)
+Failure rate for exclusion: 30.00% (30 / 100)
+Success rate for preference: 36.00% (36 / 100)
+Failure rate for preference: 15.00% (15 / 100)
+
+It really is not succeeding!
+
+Really does not.
+
+Let's try to mix up order and counts of things to see if that removes the signal 
+
+
+{'correct completion exclusion': '{example2}',
+ 'correct completion preference': '{example2}',
+ 'start_exclusion': '{irrelevant_content_1} {name} received two gifts: a '
+                    '{first_example_shown} and a {second_example_shown}. '
+                    '{irrelevant_content_2} At first, {pronoun} played with '
+                    'the {example1}. {irrelevant_content_3} But {pronoun} '
+                    "didn't like {example1} so {name}'s favorite was the ",
+ 'start_preference': '{irrelevant_content_1} {irrelevant_content_2} {pronoun} '
+                     'always played with a {example2} {name} received two '
+                     'gifts: a {example2} and a {example1}. '
+                     "{irrelevant_content_2} {irrelevant_content_3} {name}'s "
+                     'favorite was the ',
+ 'start_preference_balanced_count': '{irrelevant_content_1} {name} received '
+                                    'two gifts: a {first_example_shown} and a '
+                                    '{second_example_shown}. '
+                                    '{pronoun_capitalized} always played with '
+                                    'the {example2}, but {pronoun} was getting '
+                                    'tired of the {example1}. '
+                                    "{irrelevant_content_3} {name}'s favorite "
+                                    'was the '}
+
+Success rate for exclusion: 20.00% (20 / 100)
+Failure rate for exclusion: 28.00% (28 / 100)
+Success rate for preference: 50.00% (50 / 100)
+Failure rate for preference: 11.00% (11 / 100)
+Success rate for preference_balanced_count: 32.00% (32 / 100)
+Failure rate for preference_balanced_count: 15.00% (15 / 100)
+
+
+looks like it really does know what it means to positively add to the probability of an example, and reduce the probability based on the positive or negative affect. (AFTER THE FACT: NOPE. THIS IS A STATISTICAL ANOMALY! IT MOSTLY JUST PREDICTS EXAMPLE1)
+
+
+
+this is also interesting, that using incorrect prompting formats (like using "favorite was a tomato" rather than "favorite was the tomato" can cause things to fail to work normally
+
+{'correct completion exclusion': '{example2}',
+ 'correct completion preference': '{example2}',
+ 'start_exclusion': '{irrelevant_content_1} {name} received two gifts: a '
+                    '{first_example_shown} and a {second_example_shown}. '
+                    '{irrelevant_content_2} {irrelevant_content_3} {pronoun} '
+                    "didn't like the {example1} so {name}'s favorite was the ",
+ 'start_exlu_using_a': '{irrelevant_content_1} {name} received two gifts: a '
+                       '{first_example_shown} and a {second_example_shown}. '
+                       '{irrelevant_content_2} {irrelevant_content_3} '
+                       "{pronoun} didn't like a {example1} so {name}'s "
+                       'favorite was a ',
+ 'start_preference': '{irrelevant_content_1} {name} received two gifts: a '
+                     '{first_example_shown} and a {second_example_shown}. '
+                     '{irrelevant_content_2} {pronoun} always played with the '
+                     "{example2}. {irrelevant_content_3} {name}'s favorite was "
+                     'the ',
+ 'start_preference_balanced_count': '{irrelevant_content_1} {name} received '
+                                    'two gifts: a {first_example_shown} and a '
+                                    '{second_example_shown}. '
+                                    '{pronoun_capitalized} always played with '
+                                    'the {example2}, but {pronoun} was getting '
+                                    'tired of the {example1}. '
+                                    "{irrelevant_content_3} {name}'s favorite "
+                                    'was the ',
+ 'start_preference_reverse_order': '{irrelevant_content_1} '
+                                   '{irrelevant_content_2} {pronoun} always '
+                                   'played with a {example2} {name} received '
+                                   'two gifts: a {example2} and a {example1}. '
+                                   '{irrelevant_content_2} '
+                                   "{irrelevant_content_3} {name}'s favorite "
+                                   'was the '}
+
+Success rate for exclusion: 13.00% (13 / 100)
+Failure rate for exclusion: 19.00% (19 / 100)
+Success rate for exlu_using_a: 1.00% (1 / 100)
+Failure rate for exlu_using_a: 16.00% (16 / 100)
+Success rate for preference: 28.00% (28 / 100)
+Failure rate for preference: 14.00% (14 / 100)
+Success rate for preference_balanced_count: 17.00% (17 / 100)
+Failure rate for preference_balanced_count: 27.00% (27 / 100)
+Success rate for preference_reverse_order: 37.00% (37 / 100)
+Failure rate for preference_reverse_order: 7.00% (7 / 100)
+
+
+so separately this one is interesting.
+
+template
+{irrelevant_content_1} {name} had two {category_plural}, one {first_example_shown} and one {second_example_shown}. {irrelevant_content_2}But oh no! {pronoun_capitalized} lost the {example1}. {irrelevant_content_3} {name} thought, "at least I still have the 
+template:
+{'correct completion exclusion': '{example2}',
+ 'correct completion possession': '{example2}',
+ 'start_exclusion': '{irrelevant_content_1} {name} had two {category_plural}, '
+                    'one {first_example_shown} and one {second_example_shown}. '
+                    '{irrelevant_content_2}But oh no! {pronoun_capitalized} '
+                    'lost the {example1}. {irrelevant_content_3} {name} '
+                    'thought, "at least I still have the ',
+ 'start_possession': '{irrelevant_content_1} {name} had two {category_plural}, '
+                     'one {first_example_shown} and one '
+                     '{second_example_shown}. {irrelevant_content_2}But oh no! '
+                     '{pronoun_capitalized} lost the {example2}, but later '
+                     'found it again. {irrelevant_content_3} {name} thought, '
+                     '"It\'s great I still have the '}
+
+Success rate for exclusion: 7.00% (70 / 1000)
+Failure rate for exclusion: 42.20% (422 / 1000)
+Success rate for possession: 48.20% (482 / 1000)
+Failure rate for possession: 6.40% (64 / 1000) 
+(MODIFIED THIS ONE SLIGHTLY TO CORRECT EXAMPLE1EXAMPLE2 FLIP)
+for possession, so this seems to indicate when something is found, it's understood as being had. And the fact that its found matters more.
+
+for exclusion It seems the concept of losing things does not reduce the example1 prediction at all...
+
+
+
+
+the full data:
+
+template
+{name} wanted {category}. {name} liked both a {first_example_shown} and a {second_example_shown}. {name} asked {relationship} for a {example1} but they said no! So {name} got a 
+template:
+{'correct completion exclusion': '{example2}',
+ 'correct completion posession': '{example2}',
+ 'correct completion possession': '{example2}',
+ 'start_exclusion': '{name} wanted {category}. {name} liked both a '
+                    '{first_example_shown} and a {second_example_shown}. '
+                    '{name} asked {relationship} for a {example1} but they '
+                    'said no! So {name} got a ',
+ 'start_nonpossession': '{irrelevant_content_1} {name} wanted a {category}. '
+                        '{name} liked both a {first_example_shown} and maybe a '
+                        '{second_example_shown}. {irrelevant_content_2} When '
+                        '{name} asked {relationship} for a {example1} and was '
+                        "refused, {name} still didn't have a ",
+ 'start_possession': '{name} wanted {category}. {name} liked both a '
+                     '{first_example_shown} and a {second_example_shown}. When '
+                     '{name} asked {relationship} for a {example2} and they '
+                     'said yes! So {name} got a '}
+
+Success rate for exclusion: 5.10% (51 / 1000)
+Failure rate for exclusion: 39.40% (394 / 1000)
+Success rate for possession: 44.50% (445 / 1000)
+Failure rate for possession: 7.20% (72 / 1000)
+Success rate for nonpossession: 3.10% (31 / 1000)
+Failure rate for nonpossession: 9.00% (90 / 1000)
+
+
+
+template
+{name} loved {category_plural}, especially a {first_example_shown}. {irrelevant_content_1} {name} also would love a {second_example_shown}. {irrelevant_content_2} {relationship} couldn't get {name} a {example1}. {irrelevant_content_3} {name} was happy about getting a 
+template:
+{'correct completion exclusion': '{example2}',
+ 'correct completion preference': '{example2}',
+ 'start_exclusion': '{name} loved {category_plural}, especially a '
+                    '{first_example_shown}. {irrelevant_content_1} {name} also '
+                    'would love a {second_example_shown}. '
+                    "{irrelevant_content_2} {relationship} couldn't get {name} "
+                    'a {example1}. {irrelevant_content_3} {name} was happy '
+                    'about getting a ',
+ 'start_preference': '{name} loved {category_plural}, especially a '
+                     '{first_example_shown}. {irrelevant_content_1} {name} '
+                     'also would love a {second_example_shown}. '
+                     '{irrelevant_content_2} {relationship} was luckily able '
+                     'to get {name} a {example2}. {irrelevant_content_3} '
+                     '{name} was happy about getting a '}
+
+Success rate for exclusion: 11.90% (119 / 1000)
+Failure rate for exclusion: 40.50% (405 / 1000)
+Success rate for preference: 41.40% (414 / 1000)
+Failure rate for preference: 13.20% (132 / 1000)
+
+
+
+template
+{irrelevant_content_1} {name} had two {category_plural}, one {first_example_shown} and one {second_example_shown}. {irrelevant_content_2}But oh no! {pronoun_capitalized} lost the {example1}. {irrelevant_content_3} {name} thought, "at least I still have the 
+template:
+{'correct completion exclusion': '{example2}',
+ 'correct completion possession': '{example2}',
+ 'start_exclusion': '{irrelevant_content_1} {name} had two {category_plural}, '
+                    'one {first_example_shown} and one {second_example_shown}. '
+                    '{irrelevant_content_2}But oh no! {pronoun_capitalized} '
+                    'lost the {example1}. {irrelevant_content_3} {name} '
+                    'thought, "at least I still have the ',
+ 'start_possession': '{irrelevant_content_1} {name} had two {category_plural}, '
+                     'one {first_example_shown} and one '
+                     '{second_example_shown}. {irrelevant_content_2}But oh no! '
+                     '{pronoun_capitalized} lost the {example1}, but later '
+                     'found it again. {irrelevant_content_3} {name} thought, '
+                     '"It\'s great I still have the '}
+
+Success rate for exclusion: 7.00% (70 / 1000)
+Failure rate for exclusion: 42.20% (422 / 1000)
+Success rate for possession: 6.40% (64 / 1000)
+Failure rate for possession: 48.20% (482 / 1000)
+
+
+
+template
+{irrelevant_content_1} For {name}'s birthday, {name} could choose either a {first_example_shown} or a {second_example_shown}. {irrelevant_content_2} {pronoun_capitalized} decided a {example1} was not what {pronoun} wanted. {irrelevant_content_3} So, on {name}'s birthday, {name} was smiling with {name}'s new 
+template:
+{'correct completion exclusion': '{example2}',
+ 'correct completion possession': '{example2}',
+ 'correct completion preference': '{example2}',
+ 'start_exclusion': "{irrelevant_content_1} For {name}'s birthday, {name} "
+                    'could choose either a {first_example_shown} or a '
+                    '{second_example_shown}. {irrelevant_content_2} '
+                    '{pronoun_capitalized} decided a {example1} was not what '
+                    "{pronoun} wanted. {irrelevant_content_3} So, on {name}'s "
+                    "birthday, {name} was smiling with {name}'s new ",
+ 'start_possession': "{irrelevant_content_1} For {name}'s birthday, {name} "
+                     'could choose either a {first_example_shown} or a '
+                     '{second_example_shown}. {irrelevant_content_2} '
+                     '{pronoun_capitalized} decided a {example2} was what '
+                     "{pronoun} wanted. {irrelevant_content_3} So, on {name}'s "
+                     "birthday, {name} was smiling with {name}'s new ",
+ 'start_preference': "{irrelevant_content_1} For {name}'s birthday, {name} "
+                     'could choose either a {first_example_shown} or a '
+                     '{second_example_shown}. {irrelevant_content_2} '
+                     '{pronoun_capitalized} decided a {example1} was great, '
+                     'but {pronoun} was more excited about {example2}. '
+                     "{irrelevant_content_3} So, on {name}'s birthday, {name} "
+                     "was smiling with {name}'s new "}
+
+Success rate for exclusion: 7.00% (70 / 1000)
+Failure rate for exclusion: 39.30% (393 / 1000)
+Success rate for possession: 39.30% (393 / 1000)
+Failure rate for possession: 7.90% (79 / 1000)
+Success rate for preference: 23.40% (234 / 1000)
+Failure rate for preference: 27.60% (276 / 1000)
+
+
+
+template
+{irrelevant_content_1} In the kitchen, there were two {category_plural}, a {first_example_shown} and a {second_example_shown}. Mom lost {name}'s {example1}. {irrelevant_content_2} In {name}'s hand was the 
+template:
+{'correct completion exclusion': '{example2}',
+ 'correct completion posession': '{example2}',
+ 'start_exclusion': '{irrelevant_content_1} In the kitchen, there were two '
+                    '{category_plural}, a {first_example_shown} and a '
+                    "{second_example_shown}. Mom lost {name}'s {example1}. "
+                    "{irrelevant_content_2} In {name}'s hand was the ",
+ 'start_possession': '{irrelevant_content_1} In the kitchen, there were two '
+                     '{category_plural}, a {first_example_shown} and a '
+                     '{second_example_shown}. Mom gave {name} the {example2}. '
+                     "{irrelevant_content_2} In {name}'s hand was the "}
+
+Success rate for exclusion: 14.60% (146 / 1000)
+Failure rate for exclusion: 48.60% (486 / 1000)
+Success rate for possession: 37.30% (373 / 1000)
+Failure rate for possession: 18.50% (185 / 1000)
+
+
+
+template
+{irrelevant_content_1} {name} had two {category_plural}, a {first_example_shown} and also a {second_example_shown}. {pronoun_capitalized} gave the {example1} to {name}'s friend. In {name}'s room, {name} still kept the 
+template:
+{'correct completion exclusion': '{example2}',
+ 'correct completion posession': '{example2}',
+ 'start_exclusion': '{irrelevant_content_1} {name} had two {category_plural}, '
+                    'a {first_example_shown} and also a '
+                    '{second_example_shown}. {pronoun_capitalized} gave the '
+                    "{example1} to {name}'s friend. In {name}'s room, {name} "
+                    'still kept the ',
+ 'start_possession': '{irrelevant_content_1} {name} had two {category_plural}, '
+                     'a {first_example_shown} and also a '
+                     '{second_example_shown}. {pronoun_capitalized} gave the '
+                     "{example2} to {name}'s friend. In {name}'s friend's "
+                     "room, {name}'s friend had the "}
+
+Success rate for exclusion: 22.10% (221 / 1000)
+Failure rate for exclusion: 34.80% (348 / 1000)
+Success rate for possession: 21.10% (211 / 1000)
+Failure rate for possession: 8.20% (82 / 1000)
+
+
+
+template
+{irrelevant_content_1}Every night, {name} dreamed about {category_plural}. Sometimes {name} dreamed of a {first_example_shown}. {irrelevant_content_2} {name} also sometimes dreamed about a {second_example_shown}. One morning, {relationship} told {name} that the {example1} had turned real! {irrelevant_content_3}Excitedly, {name} looked for other {category_plural} and was excited to find the 
+template:
+{'correct completion exclusion': '{example2}',
+ 'correct completion existence': '{example2}',
+ 'start_exclusion': '{irrelevant_content_1}Every night, {name} dreamed about '
+                    '{category_plural}. Sometimes {name} dreamed of a '
+                    '{first_example_shown}. {irrelevant_content_2} {name} also '
+                    'sometimes dreamed about a {second_example_shown}. One '
+                    'morning, {relationship} told {name} that the {example1} '
+                    'had turned real! {irrelevant_content_3}Excitedly, {name} '
+                    'looked for other {category_plural} and was excited to '
+                    'find the ',
+ 'start_existence': '{irrelevant_content_1}Every night, {name} dreamed about '
+                    '{category_plural}. Sometimes {name} dreamed of a '
+                    '{first_example_shown}. {irrelevant_content_2}{name} also '
+                    'sometimes dreamed about a {second_example_shown}. One '
+                    'morning, {relationship} told {name} that the {example2} '
+                    'had turned real! {irrelevant_content_3} Excitedly, {name} '
+                    'looked for {category_plural} and was excited to indeed '
+                    'find the ',
+ 'start_existence_negation': '{irrelevant_content_1}Every night, {name} '
+                             'dreamed about {category_plural}. Sometimes '
+                             '{name} dreamed of a {first_example_shown}. '
+                             '{irrelevant_content_2}{name} also sometimes '
+                             'dreamed about a {second_example_shown}. One '
+                             'morning, {relationship} told {name} that the '
+                             '{example2} had turned real! '
+                             '{irrelevant_content_3}Excitedly, {name} looked '
+                             'for {category_plural} but was disappointed to '
+                             'not find the '}
+
+Success rate for exclusion: 20.70% (207 / 1000)
+Failure rate for exclusion: 32.10% (321 / 1000)
+Success rate for existence: 45.90% (459 / 1000)
+Failure rate for existence: 13.90% (139 / 1000)
+Success rate for existence_negation: 31.20% (312 / 1000)
+Failure rate for existence_negation: 9.00% (90 / 1000)
+
+
+
+template
+{irrelevant_content_1} While exploring the attic, {name} found an old box with two {category_plural}. At first, {name} only saw a {first_example_shown}. But then {name} noticed there was a {second_example_shown} too! {irrelevant_content_2} {pronoun_capitalized} decided to give away the {example1}. {irrelevant_content_3} At bedtime, {name} felt happy having the 
+template:
+{'correct completion exclusion': '{example2}',
+ 'correct completion possession': '{example2}',
+ 'correct completion possession2': '{example2}',
+ 'start_exclusion': '{irrelevant_content_1} While exploring the attic, {name} '
+                    'found an old box with two {category_plural}. At first, '
+                    '{name} only saw a {first_example_shown}. But then {name} '
+                    'noticed there was a {second_example_shown} too! '
+                    '{irrelevant_content_2} {pronoun_capitalized} decided to '
+                    'give away the {example1}. {irrelevant_content_3} At '
+                    'bedtime, {name} felt happy having the ',
+ 'start_possession': '{irrelevant_content_1} While exploring the attic, {name} '
+                     'found an old box with two {category_plural}. At first, '
+                     '{name} only saw a {first_example_shown}. But then {name} '
+                     'noticed there was a {second_example_shown} too! '
+                     '{irrelevant_content_2} {pronoun_capitalized} decided to '
+                     'keep the {example2}. {irrelevant_content_3} At bedtime, '
+                     '{name} felt happy having the ',
+ 'start_possession2': '{irrelevant_content_1} While exploring the attic, '
+                      '{name} found an old box with two {category_plural}. At '
+                      'first, {name} only saw a {first_example_shown}. But '
+                      'then {name} noticed there was a {second_example_shown} '
+                      'too! {irrelevant_content_2} {pronoun_capitalized} '
+                      'decided to give away the {example2}. '
+                      '{irrelevant_content_3} At bedtime, {name} felt happy '
+                      'about giving away the '}
+
+Success rate for exclusion: 10.90% (109 / 1000)
+Failure rate for exclusion: 50.30% (503 / 1000)
+Success rate for possession: 50.20% (502 / 1000)
+Failure rate for possession: 12.20% (122 / 1000)
+Success rate for possession2: 47.30% (473 / 1000)
+Failure rate for possession2: 12.90% (129 / 1000)
+
+
+
+template
+{irrelevant_content_1} At the picnic, {name} got a {first_example_shown}. Later in the day, {name} found a {second_example_shown}. {irrelevant_content_2} {pronoun_capitalized} accidentally left the {example1} at the park. {irrelevant_content_3} Thankfully, at home, {name} still had the 
+template:
+{'correct completion exclusion': '{example2}',
+ 'correct completion possession': '{example2}',
+ 'start_exclusion': '{irrelevant_content_1} At the picnic, {name} got a '
+                    '{first_example_shown}. Later in the day, {name} found a '
+                    '{second_example_shown}. {irrelevant_content_2} '
+                    '{pronoun_capitalized} accidentally left the {example1} at '
+                    'the park. {irrelevant_content_3} Thankfully, at home, '
+                    '{name} still had the ',
+ 'start_possession': '{irrelevant_content_1} At the picnic, {name} got a '
+                     '{first_example_shown}. Later in the day, {name} found a '
+                     '{second_example_shown}. {irrelevant_content_2} '
+                     '{pronoun_capitalized} accidentally left the {example2} '
+                     'at the park. {irrelevant_content_3} Thankfully, at the '
+                     'park, {name} found the '}
+
+Success rate for exclusion: 15.10% (151 / 1000)
+Failure rate for exclusion: 37.30% (373 / 1000)
+Success rate for possession: 20.40% (204 / 1000)
+Failure rate for possession: 11.70% (117 / 1000)
+
+
+
+template
+{irrelevant_content_1} {name} received two gifts: a {first_example_shown} and a {second_example_shown}. {irrelevant_content_2} {irrelevant_content_3} {pronoun} didn't like the {example1} so {name}'s favorite was the 
+template:
+{'correct completion exclusion': '{example2}',
+ 'correct completion preference': '{example2}',
+ 'start_exclusion': '{irrelevant_content_1} {name} received two gifts: a '
+                    '{first_example_shown} and a {second_example_shown}. '
+                    '{irrelevant_content_2} {irrelevant_content_3} {pronoun} '
+                    "didn't like the {example1} so {name}'s favorite was the ",
+ 'start_exlu_using_a': '{irrelevant_content_1} {name} received two gifts: a '
+                       '{first_example_shown} and a {second_example_shown}. '
+                       '{irrelevant_content_2} {irrelevant_content_3} '
+                       "{pronoun} didn't like a {example1} so {name}'s "
+                       'favorite was a ',
+ 'start_preference': '{irrelevant_content_1} {name} received two gifts: a '
+                     '{first_example_shown} and a {second_example_shown}. '
+                     '{irrelevant_content_2} {pronoun} always played with the '
+                     "{example2}. {irrelevant_content_3} {name}'s favorite was "
+                     'the ',
+ 'start_preference_balanced_count': '{irrelevant_content_1} {name} received '
+                                    'two gifts: a {first_example_shown} and a '
+                                    '{second_example_shown}. '
+                                    '{pronoun_capitalized} always played with '
+                                    'the {example2}, but {pronoun} was getting '
+                                    'tired of the {example1}. '
+                                    "{irrelevant_content_3} {name}'s favorite "
+                                    'was the ',
+ 'start_preference_reverse_order': '{irrelevant_content_1} '
+                                   '{irrelevant_content_2} {pronoun} always '
+                                   'played with a {example2} {name} received '
+                                   'two gifts: a {example2} and a {example1}. '
+                                   '{irrelevant_content_2} '
+                                   "{irrelevant_content_3} {name}'s favorite "
+                                   'was the '}
+
+Success rate for exclusion: 13.20% (132 / 1000)
+Failure rate for exclusion: 17.60% (176 / 1000)
+Success rate for exlu_using_a: 6.30% (63 / 1000)
+Failure rate for exlu_using_a: 14.20% (142 / 1000)
+Success rate for preference: 31.90% (319 / 1000)
+Failure rate for preference: 16.60% (166 / 1000)
+Success rate for preference_balanced_count: 17.60% (176 / 1000)
+Failure rate for preference_balanced_count: 25.00% (250 / 1000)
+Success rate for preference_reverse_order: 42.60% (426 / 1000)
+Failure rate for preference_reverse_order: 10.80% (108 / 1000)
+
+start_preference_balanced_count is the most striking. We see the only difference being the addition of ", but {pronoun} was getting tired of the {example1}" and this actually boosts example1!!
+
+So what to do next: see if there are more common phrases that manage to dampen example1 even a little. If not, there's simply no inhibition between objects.
+
+However, start_preference_reverse_order actually is quite interesting as it indicates that even though it's always example1 that is most recently seen, example2 is still boosted. The language model at least can boost. It may not be able to inhibit though...
+
+so funny how much "iced" and "weighted" and "icky" seem to come up in this stuff... 
+
+There's really no good evidence so far to indicate an understanding of "not" or negative.
+
+ 'start_exlu_using_a': '{irrelevant_content_1} {name} received two gifts: a '
+                       '{first_example_shown} and a {second_example_shown}. '
+                       '{irrelevant_content_2} {irrelevant_content_3} '
+                       "{pronoun} didn't like a {example1} so {name}'s "
+                       'favorite was a ',
+
+why does this boost example1? because the language had a lot of things broken by the wired grammar ("a") and extra spaces, so it used the simple repeat heuristic. More complex heuristics are possible, but they need to look more like "the". 
+So this means, I need to use really common words. Because really common words and contexts allow the model to exercise its more complex circuits.
+
+
+
+
+looking at bigrams.
+
+
+'together', '!', "''", 'so', 'the', 'two', 'friends', 'worked', 'together', 'and'), 2
+
+
+once upon a time
+girl named lily
+
+very very common
+
+
+"asked her what was wrong"
+
+
+in general, lots of interaction between 2 characters going on
+	do you want to play with my toys
+	lets play hide and seek
+lots of playing
+
+lots of parks and dogs and being outside
+
+lots of playing with toys with 2 characters
+
+lots of dialog between mom and lily
+
+things are often little
+
+
+dialog seems to be about agreeing with parents, answering yes, or saying sorry for something or thank you
+
+count: 8 | and said , `` do n't
+count: 8 | said , `` yes , but
+
+
+likely capability: understanding to hide is not to be seen. There but unseen. Being there doesn't require being seen.
+
+another capability: commanded "don't" will imply the opposite. So when somebody says "don't worry", that will probably change the characters mind
+
+usually it's don't [negative] -> positive, [negative] being worry, be scared, be sad, be shy
+
+So a don't worry probably flips tone of story.
