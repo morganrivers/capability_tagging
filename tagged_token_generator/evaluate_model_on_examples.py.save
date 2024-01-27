@@ -1,0 +1,28 @@
+# Runs the tinystories 33million parameter model on the next token implied by a sampling of examples, and reports the results.
+import torch
+import pprint
+from transformer_lens import HookedTransformer, utils
+from generate_examples_for_capability import get_text_and_completion_once
+
+model = HookedTransformer.from_pretrained("tiny-stories-33M").to(torch.float32)
+
+def run_model_return_result(test,correct_completion):
+    model_completion = model.generate(test, max_new_tokens=4, temperature=0.7, prepend_bos=True)
+    #print("model_completion, correct completion")
+    #print(model_completion + ", " +correct_completion)
+    return correct_completion in model_completion, model_completion
+
+def run_model_and_evaluate(all_tests_this_template):
+    all_tests_this_template = {}
+    for evaluation_type, test_and_completion in tests.items():
+        all_tests_this_template[evaluation_type] = test_and_completion
+        #if evaluation_type = "start_exclusion":
+        answer_in_response, model_completion = run_model_return_result(test_and_completion["test"],test_and_completion["correct_completion"])
+        all_tests_this_template[evaluation_type]["answered_correct"] = answer_in_response
+        all_tests_this_template[evaluation_type]["answer"] = model_completion
+    return all_tests_this_template
+
+#model = HookedTransformer.from_pretrained("tiny-stories-instruct-33M").to(torch.float32)
+print("get_text_and_completion_once")
+tests = get_text_and_completion_once()
+pprint.pprint(run_model_and_evaluate(model,tests))
