@@ -24,7 +24,7 @@ def load_or_create_sample_dataset(filename):
 df_sample = load_or_create_sample_dataset(SAMPLE_FILE)
 SAMPLE_FILE = 'random_sample_1000.csv'
 SAMPLE_SIZE = 1000
-RANDOM_SEED = 44
+RANDOM_SEED = 42
 
 all_examples = []
 for text in df_sample['text']:
@@ -34,27 +34,3 @@ for text in df_sample['text']:
     all_correct_predictions,
     all_previous_strings
 ) = print_better_predictions(all_examples,100)
-"""
-# Combine the lists into a list of tuples
-combined = list(zip(all_incorrect_predictions, all_correct_predictions, all_previous_strings))
-
-# Sort the list of tuples by different criteria and print out the results as requested
-
-# Printout 1: Sorted by all_incorrect_predictions (index 2, 0, 1)
-combined.sort(key=lambda x: x[0])  # Sorting by the first element of the tuple
-print("\n\n\nPrintout 1:")
-for i in combined:
-    print(i)
-
-# Printout 2: Sorted by all_correct_predictions (index 1, 2, 0)
-combined.sort(key=lambda x: x[1])  # Sorting by the second element of the tuple
-print("\n\n\nPrintout 2:")
-for i in combined:
-    print(i)
-
-# Printout 3: Sorted by all_previous_strings (index 1, 2, 0)
-combined.sort(key=lambda x: x[2])  # Sorting by the third element of the tuple
-print("\n\nPrintout 3:")
-for i in combined:
-    print(i)
-"""

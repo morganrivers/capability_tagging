@@ -82,122 +82,43 @@ def get_logits(model, input_ids):
     layer_preds, layer_probs = postprocess_logits(layer_logits)
     return layer_logits, layer_names, layer_preds, layer_probs
 
-#layer_logits_small, layer_names_small, layer_preds_small, layer_probs_small = get_logits(model_small)
-#layer_logits_large, layer_names_large, layer_preds_large, layer_probs_large = get_logits(model_large)
-"""
-print("layer_logits_small")
-print(layer_logits_small)
-print("layer_names_small")
-print(layer_names_small)
-print("layer_preds_small")
-print(layer_preds_small)
-print("layer_probs_small")
-print(layer_probs_small)
-
-
-print("layer_logits_large")
-print(layer_logits_large)
-print("layer_names_large")
-print(layer_names_large)
-print("layer_preds_large")
-print(layer_preds_large)
-print("layer_probs_large")
-print(layer_probs_large)
-"""
-"""
-def print_last_layer_info(layer_logits, layer_names, tokenizer, input_ids):
-    last_layer_logits = torch.tensor(layer_logits[-1])  # Convert to tensor if it's a numpy array
-    top_preds = torch.argmax(last_layer_logits, dim=-1)  # Find the top predictions
-
-    for i, logits in enumerate(last_layer_logits.squeeze()):
-        token = tokenizer.decode(input_ids[0, i])  # Decode the current token
-        next_token = tokenizer.decode(top_preds[i].item())  # Decode the predicted next token
-
-        print(f"Token: '{token}' - Predicted next token: '{next_token}'")
-
-# Usage for each model
-print("Small Model Predictions:")
-print_last_layer_info(layer_logits_small, layer_names_small, tokenizer, input_ids)
-
-print("\nLarge Model Predictions:")
-print_last_layer_info(layer_logits_large, layer_names_large, tokenizer, input_ids)
-def compare_and_print_predictions(layer_logits_small, layer_logits_large, input_ids, tokenizer):
-    last_layer_logits_small = torch.tensor(layer_logits_small[-1])
-    last_layer_logits_large = torch.tensor(layer_logits_large[-1])
-
-    top_preds_small = torch.argmax(last_layer_logits_small, dim=-1)
-    top_preds_large = torch.argmax(last_layer_logits_large, dim=-1)
-
-    for i in range(input_ids.shape[1] - 1):  # Exclude the last token as it has no next token
-        current_token = tokenizer.decode(input_ids[0, i])
-        actual_next_token = tokenizer.decode(input_ids[0, i+1])
-        predicted_next_token_small = tokenizer.decode(top_preds_small[i].item())
-        predicted_next_token_large = tokenizer.decode(top_preds_large[i].item())
-
-        if predicted_next_token_large == actual_next_token and predicted_next_token_small != actual_next_token:
-            print(f"Token: '{current_token}' - Small Model Predicted: '{predicted_next_token_small}', Large Model Correctly Predicted: '{predicted_next_token_large}'")
-
-# Usage
-compare_and_print_predictions(layer_logits_small, layer_logits_large, input_ids, tokenizer)
-
-"""
-"""
-def compare_and_print_predictions(layer_logits_small, layer_logits_large, input_ids, tokenizer):
-    last_layer_logits_small = torch.tensor(layer_logits_small[-1])
-    last_layer_logits_large = torch.tensor(layer_logits_large[-1])
-
-    top_preds_small = torch.argmax(last_layer_logits_small, dim=-1)
-    top_preds_large = torch.argmax(last_layer_logits_large, dim=-1)
-
-    # Ensure we do not go out of bounds
-    num_tokens = min(input_ids.shape[1] - 1, top_preds_small.shape[0], top_preds_large.shape[0])
-
-    for i in range(num_tokens):  # Iterate only over the valid range
-        current_token = tokenizer.decode(input_ids[0, i])
-        actual_next_token = tokenizer.decode(input_ids[0, i+1])
-        predicted_next_token_small = tokenizer.decode(top_preds_small[i].item())
-        predicted_next_token_large = tokenizer.decode(top_preds_large[i].item())
-
-        if predicted_next_token_large == actual_next_token and predicted_next_token_small != actual_next_token:
-            print(f"Token: '{current_token}' - Small Model Predicted: '{predicted_next_token_small}', Large Model Correctly Predicted: '{predicted_next_token_large}'")
-
-# Usage
-compare_and_print_predictions(layer_logits_small, layer_logits_large, input_ids, tokenizer)
-"""
-"""
 import torch
 import torch.nn.functional as F
 
-def compare_and_print_predictions_with_probs(layer_logits_small, layer_logits_large, input_ids, tokenizer):
-    last_layer_logits_small = torch.tensor(layer_logits_small[-1])
-    last_layer_logits_large = torch.tensor(layer_logits_large[-1])
+def print_and_return_next_token_small_model_correct(small_model_incorrect_predictions, large_model_correct_predictions, previous_string, predicted_next_token_large,actual_next_token,predicted_next_token_small,probs_small,probs_large, top_preds_small, top_preds_large, i, accumulated_string, difference_threshold=.3,prob_incorrect_threshold=.1,prob_correct_threshold=.9):
+    if predicted_next_token_large == actual_next_token and predicted_next_token_small != actual_next_token:
+        prob_small = probs_small[i, top_preds_small[i]].item()
+        prob_large = probs_large[i, top_preds_large[i]].item()
+        prob_large_for_small_pred = probs_large[i, top_preds_small[i]].item()
 
-    top_preds_small = torch.argmax(last_layer_logits_small, dim=-1)
-    top_preds_large = torch.argmax(last_layer_logits_large, dim=-1)
 
-    # Convert logits to probabilities using softmax
-    probs_small = F.softmax(last_layer_logits_small, dim=-1)
-    probs_large = F.softmax(last_layer_logits_large, dim=-1)
+        if ( (prob_large - prob_small) > difference_threshold):
+            if prob_large_for_small_pred < prob_correct_threshold and prob_large > prob_correct_threshold:
+                small_model_incorrect_predictions.append(predicted_next_token_small)
+                large_model_correct_predictions.append(predicted_next_token_large)
+                previous_string.append(accumulated_string.strip()[-20:])
+                print(f"\n\nContext: {accumulated_string.strip()}")
+                print(f"Small Model Predicted: '{predicted_next_token_small}' (Prob: {prob_small:.4f}), Large Model Correctly Predicted: '{predicted_next_token_large}' (Prob: {prob_large})")
+                print(f"Probability assigned by Large Model to Small Model's prediction: {prob_large_for_small_pred:.4f}")
+                print()
+    return (small_model_incorrect_predictions, large_model_correct_predictions, previous_string)
 
-    num_tokens = min(input_ids.shape[1] - 1, top_preds_small.shape[0], top_preds_large.shape[0])
 
-    for i in range(num_tokens):  # Iterate only over the valid range
-        current_token = tokenizer.decode(input_ids[0, i])
-        actual_next_token = tokenizer.decode(input_ids[0, i+1])
-        predicted_next_token_small = tokenizer.decode(top_preds_small[i].item())
-        predicted_next_token_large = tokenizer.decode(top_preds_large[i].item())
+def print_and_return_next_token_large_model_correct(small_model_incorrect_predictions, large_model_correct_predictions, previous_string, predicted_next_token_large,actual_next_token,predicted_next_token_small,probs_small,probs_large, top_preds_small, top_preds_large, i, accumulated_string, difference_threshold=.3,prob_incorrect_threshold=.1,prob_correct_threshold=.9):
+    if predicted_next_token_small == actual_next_token and predicted_next_token_large != actual_next_token:
+        prob_small = probs_small[i, top_preds_small[i]].item()
+        prob_large = probs_large[i, top_preds_large[i]].item()
+        prob_small_for_large_pred = probs_small[i, top_preds_large[i]].item()
 
-        if predicted_next_token_large == actual_next_token and predicted_next_token_small != actual_next_token:
-            prob_small = probs_small[i, top_preds_small[i]].item()
-            prob_large = probs_large[i, top_preds_large[i]].item()
+        if ((prob_small - prob_large) > difference_threshold):
+            if prob_small_for_large_pred < prob_incorrect_threshold and prob_small > prob_correct_threshold:
+                print(f"\n\n\nSMALL BETTER THAN BIG!\nContext: {accumulated_string.strip()}")
+                print(f"Large Model Predicted: '{predicted_next_token_large}' (Prob: {prob_large:.4f}), Small Model Correctly Predicted: '{predicted_next_token_small}' (Prob: {prob_small})")
+                print(f"Probability assigned by Small Model to Large Model's prediction: {prob_small_for_large_pred:.4f}")
+                print("END SMALL BETTER THAN BIG!")
+                print()
+    return (small_model_incorrect_predictions, large_model_correct_predictions, previous_string)
 
-            print(f"Token: '{current_token}' - Small Model Predicted: '{predicted_next_token_small}' (Prob: {prob_small:.4f}), Large Model Correctly Predicted: '{predicted_next_token_large}' (Prob: {prob_large:.4f})")
-
-# Usage
-compare_and_print_predictions_with_probs(layer_logits_small, layer_logits_large, input_ids, tokenizer)
-"""
-import torch
-import torch.nn.functional as F
 
 def compare_and_print_predictions_with_context_and_probs(layer_logits_small, layer_logits_large, input_ids, tokenizer):
     last_layer_logits_small = torch.tensor(layer_logits_small[-1])
@@ -212,8 +133,7 @@ def compare_and_print_predictions_with_context_and_probs(layer_logits_small, lay
 
     num_tokens = min(input_ids.shape[1] - 1, top_preds_small.shape[0], top_preds_large.shape[0])
     accumulated_string = ""
-    #print("num_tokens")
-    #print(num_tokens)
+
     small_model_incorrect_predictions = []
     large_model_correct_predictions = []
     previous_string = []
@@ -223,21 +143,22 @@ def compare_and_print_predictions_with_context_and_probs(layer_logits_small, lay
         actual_next_token = tokenizer.decode(input_ids[0, i+1])
         predicted_next_token_small = tokenizer.decode(top_preds_small[i].item())
         predicted_next_token_large = tokenizer.decode(top_preds_large[i].item())
+        is_uninteresting_token = False
+        if actual_next_token=="\n" or actual_next_token == "." or actual_next_token == "," or actual_next_token == "'s":
+            is_uninteresting_token = True
+        if predicted_next_token_small=="\n" or predicted_next_token_small == "." or predicted_next_token_small == "," or predicted_next_token_small == "'s":
+            is_uninteresting_token = True
+        if predicted_next_token_large=="\n" or predicted_next_token_large == "." or predicted_next_token_large == "," or predicted_next_token_large == "'s":
+            is_uninteresting_token = True
+        if current_token.lower() == " once" and actual_next_token.lower() == " upon":
+            is_uninteresting_token = True
 
-        if predicted_next_token_large == actual_next_token and predicted_next_token_small != actual_next_token:
-            prob_small = probs_small[i, top_preds_small[i]].item()
-            prob_large = probs_large[i, top_preds_large[i]].item()
-            prob_large_for_small_pred = probs_large[i, top_preds_small[i]].item()
+        if is_uninteresting_token:
+            continue
 
-            if ( (prob_large - prob_small) > .3):
-                if prob_large_for_small_pred < 0.01:
-                    small_model_incorrect_predictions.append(predicted_next_token_small)
-                    large_model_correct_predictions.append(predicted_next_token_large)
-                    previous_string.append(accumulated_string.strip()[:-20])
-                    print(f"Context: {accumulated_string.strip()}")
-                    print(f"Token: '{current_token}' - Small Model Predicted: '{predicted_next_token_small}' (Prob: {prob_small:.4f}), Large Model Correctly Predicted: '{predicted_next_token_large}' (Prob: {prob_large:.4f})")
-                    print(f"Probability assigned by Large Model to Small Model's prediction: {prob_large_for_small_pred:.4f}")
-                    print()
+
+        print_and_return_next_token_small_model_correct(small_model_incorrect_predictions, large_model_correct_predictions, previous_string, predicted_next_token_large,actual_next_token,predicted_next_token_small,probs_small,probs_large,top_preds_small, top_preds_large, i, accumulated_string)
+        (small_model_incorrect_predictions, large_model_correct_predictions, previous_string) = print_and_return_next_token_large_model_correct(small_model_incorrect_predictions, large_model_correct_predictions, previous_string, predicted_next_token_large,actual_next_token,predicted_next_token_small,probs_small,probs_large,top_preds_small, top_preds_large, i, accumulated_string)
     return (
         small_model_incorrect_predictions,
         large_model_correct_predictions,
@@ -268,7 +189,8 @@ def print_better_predictions(examples,n_examples):
         print("")
         input_ids = text_to_input_ids(example)
         input_ids = input_ids.to(device)
-
+        print("example")
+        print(example)
         start_ix=0
         end_ix=input_ids.shape[1] - 1#,#len(input_ids) - 1
 
